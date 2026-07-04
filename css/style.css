@@ -714,7 +714,6 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
   gap: 4px 16px;
   padding-top: 14px;
   margin-top: 2px;
-  border-top: 1px solid var(--ink);
 }
 .spec__idx { color: var(--ember); }
 .spec__name {
