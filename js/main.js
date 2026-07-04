@@ -46,12 +46,14 @@
   const pins = [];      // {el, stage, top, range, steps, idx, chapterData}
   const reveals = [];   // {el, top, done}
   const fills = [];     // {el, words, top, height, lit}
+  const fillChain = []; // thesis paragraphs — filled as one continuous sequence
   const parallaxes = [];// {el, top, height, factor}
   const sections = [];  // {el, top, label, navSel}
   const covers = [];    // {incomingTop, prev} — prev recedes while next slides over
   const grows = [];     // {el, top} — cards scaling 0.88 → 1 on entry
   const iparallax = []; // {img, top, h} — inner image drift
   let heroPin = null;   // {el, card, logo, h} — hero stays put while thesis covers it
+  let thesisPin = null; // thesis hold — fill chain completes before release
   let stackPills = [];  // interlude pill choreography
 
   const easeOutCubic = (p) => 1 - Math.pow(1 - p, 3);
@@ -97,6 +99,9 @@
       const steps = +el.dataset.steps || 1;
       el.style.height = steps * 160 + "vh";
     });
+    // thesis hold: one screen plus fill runway
+    const thesisEl = document.querySelector("[data-pin-thesis]");
+    if (thesisEl) thesisEl.style.height = "270vh";
     const inter = document.querySelector(".interlude");
 
     // body height = content height
@@ -118,6 +123,18 @@
     if (inter) {
       const stack = inter.querySelector(".interlude__stack");
       pins.push({ el: inter, stage: stack, top: offsetOf(inter), range: inter.offsetHeight - vh, steps: 1, idx: -1, data: null });
+    }
+    thesisPin = null;
+    if (thesisEl) {
+      thesisPin = {
+        el: thesisEl,
+        stage: thesisEl.querySelector(".thesis-stage"),
+        top: offsetOf(thesisEl),
+        range: thesisEl.offsetHeight - vh,
+        steps: 1, idx: -1, data: null,
+        y: 0,
+      };
+      pins.push(thesisPin);
     }
 
     document.querySelectorAll("[data-lines]").forEach(splitLines);
@@ -142,6 +159,7 @@
     });
 
     fills.length = 0;
+    fillChain.length = 0;
     document.querySelectorAll("[data-fill]").forEach((el) => {
       if (!el.dataset.split) {
         const words = el.textContent.trim().split(/\s+/);
@@ -158,6 +176,8 @@
         lit: -1,
       });
     });
+    // thesis paragraphs run as one chain: the second starts only after the first completes
+    fillChain.push(...fills.filter((f) => f.el.closest(".thesis")).sort((a, b) => a.top - b.top));
 
     parallaxes.length = 0;
     document.querySelectorAll("[data-parallax]").forEach((el) => {
@@ -318,20 +338,22 @@
     // pins
     for (const pin of pins) {
       const y = Math.min(Math.max(current - pin.top, 0), Math.max(pin.range, 0));
+      pin.y = y;
       pin.stage.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
       if (pin.data && pin.range > 0) {
         const p = y / pin.range;
         const exact = p * pin.steps;
         const idx = Math.min(pin.steps - 1, Math.floor(exact));
         applyStep(pin, idx);
-        // tint sweep: words go ghost → accent (frontier band) → ink within each step
+        // tint sweep: words go ghost → accent (frontier band) → ink within each step;
+        // the frontier travels band-width past the end so every word settles to ink
         if (pin.descWords && pin.descWords.length) {
           const within = clamp01((exact - idx) / 0.8);
           const n = pin.descWords.length;
-          const lit = Math.round(within * n);
+          const band = Math.max(2, Math.round(n * 0.24));
+          const lit = Math.round(within * (n + band));
           if (lit !== pin.lastLit) {
             pin.lastLit = lit;
-            const band = Math.max(2, Math.round(n * 0.24));
             pin.descWords.forEach((w, i) => {
               w.classList.toggle("is-lit", i < lit - band);
               w.classList.toggle("is-hot", i >= lit - band && i < lit);
@@ -386,11 +408,39 @@
       if (!h.done && h.top < current + vh * 0.75) { h.done = true; h.el.classList.add("is-lit"); }
     }
 
-    // word fills
+    // word fills — chained paragraphs share one progress, filling in sequence.
+    // driven by the thesis hold: words finish at 85% of the pin, then it releases
+    if (fillChain.length) {
+      let p;
+      if (thesisPin && thesisPin.range > 0) {
+        p = clamp01(thesisPin.y / (thesisPin.range * 0.85));
+      } else {
+        const first = fillChain[0];
+        const last = fillChain[fillChain.length - 1];
+        const start = first.top - vh * 0.85;
+        const end = last.top - vh * 0.25 + last.height;
+        p = clamp01((current - start) / (end - start));
+      }
+      const total = fillChain.reduce((s, f) => s + f.words.length, 0);
+      let remaining = Math.round(p * total);
+      for (const f of fillChain) {
+        const lit = Math.max(0, Math.min(f.words.length, remaining));
+        remaining -= f.words.length;
+        if (lit !== f.lit) {
+          f.lit = lit;
+          f.words.forEach((w, i) => {
+            w.classList.toggle("is-lit", i < lit);
+            if (w.classList.contains("hot-mark")) w.classList.toggle("is-hot", i < lit);
+          });
+        }
+      }
+    }
+    // any standalone fills keep their own local progress
     for (const f of fills) {
+      if (fillChain.includes(f)) continue;
       const start = f.top - vh * 0.85;
       const end = f.top - vh * 0.25 + f.height;
-      const p = Math.min(1, Math.max(0, (current - start) / (end - start)));
+      const p = clamp01((current - start) / (end - start));
       const lit = Math.round(p * f.words.length);
       if (lit !== f.lit) {
         f.lit = lit;
@@ -593,6 +643,19 @@
     slides[qi].classList.add("is-active");
     syncPanel();
   }
+  // arrow icon fly-through: clone each arrow's icon so hover swaps them
+  document.querySelectorAll(".qcard__arrow").forEach((btn) => {
+    const svg = btn.querySelector("svg");
+    if (!svg) return;
+    const clone = svg.cloneNode(true);
+    clone.classList.add("clone");
+    clone.setAttribute("aria-hidden", "true");
+    btn.appendChild(clone);
+  });
+  ["qPrev", "qPrevIn"].forEach((id) =>
+    document.getElementById(id)?.classList.add("qcard__arrow--prev")
+  );
+
   qtabs.forEach((t) => t.addEventListener("click", () => goTo(+t.dataset.q)));
   document.getElementById("qNext").addEventListener("click", () => goQ(1));
   document.getElementById("qPrev").addEventListener("click", () => goQ(-1));
