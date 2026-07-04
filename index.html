@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FERRUM • The Innovation of Steel</title>
+<meta name="description" content="FERRUM — a study in the innovation of steel, metals and casting. From the first bloomery to hydrogen-reduced iron.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23FF4A11'/></svg>">
+</head>
+<body>
+
+<!-- ═══════════════ PRELOADER ═══════════════ -->
+<div class="loader" id="loader">
+  <span class="loader__layer loader__layer--ember"></span>
+  <span class="loader__layer loader__layer--coal"></span>
+  <div class="loader__inner">
+    <div class="loader__row">
+      <span class="loader__label mono">FERRUM — SMELTING</span>
+      <span class="loader__count mono" id="loaderCount">0</span>
+    </div>
+    <div class="loader__bar"><span id="loaderBar"></span></div>
+  </div>
+</div>
+
+<!-- ═══════════════ CURSOR / PROGRESS / GRAIN ═══════════════ -->
+<div class="cursor" id="cursor"><span class="cursor__dot"></span></div>
+<div class="cursor-tag mono" id="cursorTag"></div>
+<div class="progressbar" id="progressBar"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ═══════════════ FIXED CHROME ═══════════════ -->
+<nav class="chrome chrome--bottom">
+  <div class="pill pill--context" id="contextPill" data-hover data-magnet>
+    <span class="pill__dot"></span>
+    <span class="pill__swap"><span id="contextLabel">Intro</span></span>
+  </div>
+  <div class="pill-group" id="pillGroup">
+    <span class="pill-group__blob" id="pillBlob" aria-hidden="true"></span>
+    <a class="pill-group__item mono" href="#foundations" data-nav="#foundations" data-hover data-magnet data-roll>Origins</a>
+    <a class="pill-group__item mono" href="#timeline" data-nav="#timeline" data-hover data-magnet data-roll>Timeline</a>
+    <a class="pill-group__item mono" href="#frontier" data-nav="#frontier" data-hover data-magnet data-roll>Frontier</a>
+    <a class="pill-group__item pill-group__item--cta mono" href="#contact" data-nav="#contact" data-hover data-magnet data-roll>Contact</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ SMOOTH-SCROLL CONTENT ═══════════════ -->
+<main id="smooth">
+<div id="top"></div>
+
+<!-- ─────────── HERO ─────────── -->
+<section class="hero" id="hero" data-section-label="Intro">
+  <div class="hero__card">
+    <figure class="hero__media" data-parallax="0.18">
+      <img src="assets/img/hero-pour.jpg" alt="Molten steel pour" id="heroImg">
+      <div class="hero__shade"></div>
+    </figure>
+
+    <svg class="hero__logo" viewBox="0 0 2366 365" fill="#FF3600" role="img" aria-label="FERRUM">
+      <g id="ferrum-title">
+      <g class="ll" style="--li:5"><path d="M1946.53 0C1957.66 4.86324e-07 1966.68 9.01972 1966.68 20.1455V266.146C1966.68 272.772 1966.68 276.085 1965.87 279.189C1965.29 281.409 1964.41 283.539 1963.25 285.519C1961.62 288.286 1959.28 290.629 1954.59 295.314L1901.03 348.884C1896.34 353.569 1894 355.912 1891.23 357.534C1889.25 358.694 1887.12 359.577 1884.9 360.156C1881.8 360.966 1878.48 360.966 1871.86 360.966H1700.53C1693.9 360.966 1690.59 360.966 1687.49 360.156C1685.27 359.577 1683.14 358.694 1681.16 357.534C1678.39 355.912 1676.05 353.569 1671.36 348.884L1617.79 295.314C1613.11 290.629 1610.77 288.286 1609.14 285.519C1607.98 283.539 1607.1 281.409 1606.52 279.189C1605.71 276.085 1605.71 272.772 1605.71 266.146V20.1455C1605.71 9.01972 1614.73 4.86324e-07 1625.86 0C1636.98 0.000271939 1646 9.01989 1646 20.1455V276.126C1646 292.523 1646 300.721 1649.44 306.868C1651.88 311.213 1655.46 314.8 1659.81 317.233C1665.96 320.676 1674.15 320.676 1690.55 320.676H1881.84C1898.23 320.676 1906.43 320.676 1912.58 317.233C1916.92 314.8 1920.51 311.213 1922.94 306.868C1926.39 300.721 1926.39 292.523 1926.39 276.126V20.1455C1926.39 9.01989 1935.41 0.000271939 1946.53 0Z"/></g>
+      <g class="ll" style="--li:2"><path d="M742.248 0C753.374 0 762.394 9.01972 762.394 20.1455C762.393 31.2711 753.374 40.29 742.248 40.29H486.268C469.871 40.29 461.673 40.29 455.525 43.7324C451.181 46.1655 447.593 49.7531 445.16 54.0977C441.718 60.2448 441.718 68.4433 441.718 84.8398V140.013C441.718 151.138 432.699 160.158 421.573 160.158C410.448 160.158 401.428 151.139 401.428 140.014V94.8197C401.428 88.1937 401.428 84.8806 402.238 81.7765C402.817 79.5564 403.699 77.4267 404.859 75.4473C406.482 72.6796 408.824 70.3369 413.51 65.6516L467.079 12.0818C471.765 7.39651 474.107 5.05385 476.875 3.43164C478.854 2.27148 480.984 1.38933 483.204 0.810023C486.308 0 489.621 0 496.247 0H742.248Z"/>
+<path d="M742.248 162.158C753.374 162.158 762.394 171.178 762.394 182.303C762.393 193.429 753.374 202.448 742.248 202.448H486.268C469.871 202.448 461.673 202.448 455.525 205.89C451.181 208.323 447.593 211.911 445.16 216.256C441.718 222.403 441.718 230.601 441.718 246.998V276.371C441.718 292.767 441.718 300.966 445.16 307.113C447.593 311.458 451.181 315.045 455.525 317.478C461.673 320.921 469.871 320.921 486.268 320.921H742.248C753.374 320.921 762.393 329.94 762.394 341.065C762.394 352.191 753.374 361.211 742.248 361.211H496.247C489.621 361.211 486.308 361.211 483.204 360.401C480.984 359.822 478.854 358.939 476.875 357.779C474.107 356.157 471.764 353.814 467.079 349.129L413.51 295.559C408.824 290.874 406.482 288.531 404.859 285.763C403.699 283.784 402.817 281.654 402.237 279.434C401.561 276.844 401.451 274.108 401.433 269.422C401.431 269.387 401.428 269.352 401.428 269.316V254.052C401.428 254.017 401.431 253.981 401.433 253.946C401.451 249.261 401.561 246.525 402.237 243.934C402.817 241.714 403.699 239.585 404.859 237.605C406.482 234.837 408.824 232.495 413.51 227.809L467.079 174.24C471.764 169.555 474.107 167.212 476.875 165.59C478.854 164.429 480.984 163.547 483.204 162.968C486.308 162.158 489.621 162.158 496.247 162.158H742.248Z"/></g>
+      <g class="ll" style="--li:6"><path d="M2112.3 6.12021e-06C2112.32 9.0287e-06 2112.33 0.000654496 2112.35 0.000982683C2117.89 0.00661619 2120.9 0.0702691 2123.73 0.809576C2125.95 1.38888 2128.08 2.27149 2130.06 3.43165C2132.83 5.05385 2135.17 7.39672 2139.86 12.082L2194.43 66.6514C2199.11 71.3367 2201.46 73.6795 2203.08 76.4473C2204.24 78.4267 2205.12 80.5564 2205.7 82.7764C2206.51 85.8805 2206.51 89.1936 2206.51 95.8193V340.82C2206.51 351.946 2197.49 360.966 2186.36 360.966C2175.24 360.966 2166.22 351.946 2166.22 340.82V84.8399C2166.22 68.4433 2166.22 60.2448 2162.78 54.0977C2160.34 49.7532 2156.76 46.1655 2152.41 43.7324C2146.27 40.2901 2138.07 40.29 2121.67 40.29H2091.98C2075.58 40.29 2067.38 40.2903 2061.24 43.7324C2056.89 46.1654 2053.3 49.7532 2050.87 54.0977C2047.43 60.2448 2047.43 68.4433 2047.43 84.8399V340.82C2047.43 351.946 2038.41 360.965 2027.28 360.966C2016.16 360.966 2007.14 351.946 2007.14 340.82V95.8193C2007.14 89.1935 2007.14 85.8805 2007.95 82.7764C2008.53 80.5564 2009.41 78.4267 2010.57 76.4473C2012.19 73.6796 2014.53 71.3365 2019.22 66.6514L2073.79 12.082C2078.48 7.39674 2080.82 5.05385 2083.59 3.43165C2085.57 2.27158 2087.7 1.38885 2089.92 0.809576C2092.75 0.0704032 2095.76 0.00661918 2101.3 0.000982683C2101.31 0.000645688 2101.33 6.11865e-06 2101.35 6.12021e-06H2112.3Z"/>
+<path d="M2365.67 340.82C2365.67 351.946 2356.65 360.966 2345.52 360.966C2334.4 360.966 2325.38 351.946 2325.38 340.82V84.8399C2325.38 68.4433 2325.38 60.2448 2321.94 54.0977C2319.5 49.7531 2315.92 46.1655 2311.57 43.7324C2305.42 40.2901 2297.22 40.29 2280.83 40.29L2225.66 40.29C2214.53 40.29 2205.51 31.2711 2205.51 20.1455C2205.51 9.01988 2214.53 0.000263012 2225.65 0L2270.85 1.97549e-06C2277.47 2.26512e-06 2280.79 2.38419e-06 2283.89 0.810025C2286.11 1.38933 2288.24 2.27148 2290.22 3.43164C2292.99 5.05385 2295.33 7.39652 2300.02 12.0818L2353.59 65.6516C2358.27 70.3369 2360.61 72.6796 2362.24 75.4473C2363.4 77.4267 2364.28 79.5564 2364.86 81.7765C2365.67 84.8806 2365.67 88.1937 2365.67 94.8197V340.82Z"/></g>
+      <g class="ll" style="--li:1"><path d="M340.82 0C351.946 0 360.966 9.01972 360.966 20.1455C360.966 31.2711 351.946 40.29 340.82 40.29H84.8398C68.4433 40.29 60.2448 40.29 54.0977 43.7324C49.7531 46.1655 46.1655 49.7531 43.7324 54.0977C40.29 60.2448 40.29 68.4433 40.29 84.8398V140.013C40.29 151.138 31.2711 160.158 20.1455 160.158C9.01988 160.158 0.000263498 151.139 0 140.014V94.8197C0 88.1937 0 84.8806 0.810023 81.7765C1.38933 79.5564 2.27148 77.4267 3.43164 75.4473C5.05385 72.6796 7.39651 70.3369 12.0818 65.6516L65.6516 12.0818C70.3369 7.39651 72.6796 5.05385 75.4473 3.43164C77.4267 2.27148 79.5564 1.38933 81.7765 0.810023C84.8806 0 88.1937 0 94.8197 0H340.82Z"/>
+<path d="M340.82 161.158C351.946 161.158 360.966 170.178 360.966 181.303C360.966 192.429 351.946 201.448 340.82 201.448H84.8398C68.4433 201.448 60.2448 201.448 54.0977 204.89C49.7531 207.323 46.1655 210.911 43.7324 215.256C40.29 221.403 40.29 229.601 40.29 245.998V344.172C40.2898 355.297 31.2709 364.316 20.1455 364.316C9.01988 364.316 0.000263732 355.297 0 344.172V255.978C0 249.352 0 246.039 0.810023 242.934C1.38933 240.714 2.27148 238.585 3.43164 236.605C5.05385 233.838 7.39651 231.495 12.0818 226.81L65.6516 173.24C70.3369 168.554 72.6796 166.212 75.4473 164.59C77.4267 163.429 79.5564 162.547 81.7765 161.968C84.8806 161.158 88.1937 161.158 94.8197 161.158H340.82Z"/></g>
+      <g class="ll" style="--li:3"><path d="M823.001 0C811.875 0 802.856 9.01972 802.856 20.1455C802.856 31.2711 811.876 40.29 823.001 40.29H1078.98C1095.38 40.29 1103.58 40.29 1109.72 43.7324C1114.07 46.1655 1117.66 49.7531 1120.09 54.0977C1123.53 60.2448 1123.53 68.4433 1123.53 84.8398V140.013C1123.53 151.138 1132.55 160.158 1143.68 160.158C1154.8 160.158 1163.82 151.139 1163.82 140.014V94.8197C1163.82 88.1937 1163.82 84.8806 1163.01 81.7765C1162.43 79.5564 1161.55 77.4267 1160.39 75.4473C1158.77 72.6796 1156.43 70.3369 1151.74 65.6516L1098.17 12.0818C1093.48 7.39651 1091.14 5.05385 1088.37 3.43164C1086.39 2.27148 1084.27 1.38933 1082.05 0.810023C1078.94 0 1075.63 0 1069 0H823.001Z"/>
+<path d="M823.001 161.158C811.875 161.158 802.856 170.178 802.856 181.303C802.856 192.429 811.876 201.448 823.001 201.448H1078.98C1095.38 201.448 1103.58 201.448 1109.72 204.89C1114.07 207.323 1117.66 210.911 1120.09 215.256C1123.53 221.403 1123.53 229.601 1123.53 245.998V344.172C1123.53 355.297 1132.55 364.316 1143.68 364.316C1154.8 364.316 1163.82 355.297 1163.82 344.172V255.978C1163.82 249.352 1163.82 246.039 1163.01 242.934C1162.43 240.714 1161.55 238.585 1160.39 236.605C1158.77 233.838 1156.43 231.495 1151.74 226.81L1098.17 173.24C1093.48 168.554 1091.14 166.212 1088.37 164.59C1086.39 163.429 1084.27 162.547 1082.05 161.968C1078.94 161.158 1075.63 161.158 1069 161.158H823.001Z"/></g>
+      <g class="ll" style="--li:4"><path d="M1224.43 0C1213.3 0 1204.28 9.01972 1204.28 20.1455C1204.28 31.2711 1213.3 40.29 1224.43 40.29H1480.41C1496.81 40.29 1505 40.29 1511.15 43.7324C1515.5 46.1655 1519.08 49.7531 1521.52 54.0977C1524.96 60.2448 1524.96 68.4433 1524.96 84.8398V140.013C1524.96 151.138 1533.98 160.158 1545.1 160.158C1556.23 160.158 1565.25 151.139 1565.25 140.014V94.8197C1565.25 88.1937 1565.25 84.8806 1564.44 81.7765C1563.86 79.5564 1562.98 77.4267 1561.82 75.4473C1560.2 72.6796 1557.85 70.3369 1553.17 65.6516L1499.6 12.0818C1494.91 7.39651 1492.57 5.05385 1489.8 3.43164C1487.82 2.27148 1485.69 1.38933 1483.47 0.810023C1480.37 0 1477.06 0 1470.43 0H1224.43Z"/>
+<path d="M1224.43 161.158C1213.3 161.158 1204.28 170.178 1204.28 181.303C1204.28 192.429 1213.3 201.448 1224.43 201.448H1480.41C1496.81 201.448 1505 201.448 1511.15 204.89C1515.5 207.323 1519.08 210.911 1521.52 215.256C1524.96 221.403 1524.96 229.601 1524.96 245.998V344.172C1524.96 355.297 1533.98 364.316 1545.1 364.316C1556.23 364.316 1565.25 355.297 1565.25 344.172V255.978C1565.25 249.352 1565.25 246.039 1564.44 242.934C1563.86 240.714 1562.98 238.585 1561.82 236.605C1560.2 233.838 1557.85 231.495 1553.17 226.81L1499.6 173.24C1494.91 168.554 1492.57 166.212 1489.8 164.59C1487.82 163.429 1485.69 162.547 1483.47 161.968C1480.37 161.158 1477.06 161.158 1470.43 161.158H1224.43Z"/></g>
+    </g>
+    </svg>
+
+    <div class="hero__foot">
+      <p class="hero__tag">An anatomy of steel, metals &amp; casting —<br>three millennia of heat, chemistry and nerve.</p>
+      <div class="hero__scroll mono" data-hover data-magnet id="scrollCue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4 L12 20 M6 14 L12 20 L18 14"/></svg>
+        SCROLL TO SMELT
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── N.001 THESIS ─────────── -->
+<section class="section" id="thesis" data-section-label="Thesis">
+  <div class="section__meta mono"><span>N.001</span><span>THESIS</span><span>N.001</span></div>
+  <div class="thesis">
+    <p class="fill-text thesis__lead" data-fill>
+      Steel is the quiet operating system of civilization — an alloy of iron and a whisper of carbon, refined for three thousand years and poured into every bridge, blade, turbine and skyline on Earth.
+    </p>
+    <p class="fill-text thesis__lead thesis__lead--second" data-fill>
+      It is the most recycled material we have ever made. And right now, it is being reinvented again.
+    </p>
+    <div class="thesis__facts">
+      <div class="fact" data-reveal>
+        <span class="fact__num" data-count="1892">0</span><span class="fact__unit">Mt</span>
+        <span class="fact__label mono">CRUDE STEEL CAST PER YEAR</span>
+      </div>
+      <div class="fact" data-reveal>
+        <span class="fact__num" data-count="1538">0</span><span class="fact__unit">°C</span>
+        <span class="fact__label mono">MELTING POINT OF PURE IRON</span>
+      </div>
+      <div class="fact" data-reveal>
+        <span class="fact__num" data-count="3500">0</span><span class="fact__unit">+</span>
+        <span class="fact__label mono">GRADES IN COMMERCIAL USE</span>
+      </div>
+      <div class="fact" data-reveal>
+        <span class="fact__num" data-count="85">0</span><span class="fact__unit">%</span>
+        <span class="fact__label mono">RECOVERED &amp; RECYCLED</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── MARQUEE ─────────── -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track" id="marqueeTrack">
+    <span class="marquee__unit">HEMATITE <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> BLAST FURNACE <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> BESSEMER <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> CONTINUOUS CASTING <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> HYDROGEN DRI <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> </span>
+    <span class="marquee__unit">HEMATITE <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> BLAST FURNACE <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> BESSEMER <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> CONTINUOUS CASTING <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> HYDROGEN DRI <svg class="spark" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg> </span>
+  </div>
+</div>
+
+<!-- ─────────── N.002 FOUNDATIONS (pinned chapter) ─────────── -->
+<section class="section" id="foundations" data-section-label="Origins">
+  <div class="section__meta mono"><span>N.002</span><span>FOUNDATIONS</span><span>N.002</span></div>
+
+  <div class="chapter" data-pin data-steps="3">
+    <div class="chapter__stage">
+      <div class="chapter__grid">
+        <figure class="chapter__media">
+          <img class="chapter__img is-active" src="assets/img/spec-ore.jpg" alt="Raw hematite iron ore specimen">
+          <img class="chapter__img" src="assets/img/casting.jpg" alt="Molten iron">
+          <img class="chapter__img" src="assets/img/spec-ferro.jpg" alt="Fractured ferrochrome alloy specimen">
+          <figcaption class="chapter__cap mono"><span class="chapter__capText">FIG. 01 — HEMATITE, RAW</span></figcaption>
+        </figure>
+        <div class="chapter__text">
+          <div class="chapter__num serif-num">01</div>
+          <div class="chapter__titles">
+            <div class="chapter__keeper"><span class="hl hl--ember">Foundations</span></div>
+            <h3 class="chapter__title"><span class="chapter__titleSwap">Ore</span></h3>
+          </div>
+          <p class="chapter__desc">Everything begins as rock. Hematite and magnetite — banded relics of ancient oceans — are mined, crushed and sintered into pellets: the raw grammar of the metallic age.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── N.003 TIMELINE ─────────── -->
+<section class="section" id="timeline" data-section-label="Timeline">
+  <div class="section__meta mono"><span>N.003</span><span>BREAKTHROUGHS</span><span>N.003</span></div>
+
+  <h2 class="section__display" data-reveal data-lines>Thirteen moments<br><em>that forged the world</em></h2>
+
+  <ol class="mile">
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">c.1200 BC</span>
+      <span class="mile__name">First Ironworks</span>
+      <span class="mile__note">Anatolian smiths smelt bloomery iron. The Bronze Age quietly ends.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">c.300 BC</span>
+      <span class="mile__name">Wootz &amp; Damascus</span>
+      <span class="mile__note">South Indian crucibles yield patterned high-carbon steel, traded across empires.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1740</span>
+      <span class="mile__name">Crucible Steel</span>
+      <span class="mile__note">Benjamin Huntsman remelts blister steel in Sheffield — uniform, clean, castable.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1784</span>
+      <span class="mile__name">Puddling</span>
+      <span class="mile__note">Henry Cort's reverberatory furnace industrializes wrought iron at scale.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row mile__row--major" data-reveal data-hover>
+      <span class="mile__year mono">1856</span>
+      <span class="mile__name">The Bessemer Converter</span>
+      <span class="mile__note">Air blown through molten iron makes steel in minutes, not weeks. Cost falls by ~80%.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1865</span>
+      <span class="mile__name">Open Hearth</span>
+      <span class="mile__note">Siemens–Martin regenerative furnaces bring tonnage, patience and control.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1900</span>
+      <span class="mile__name">Electric Arc</span>
+      <span class="mile__note">Héroult's EAF melts scrap with pure current. Recycling becomes an industry.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1913</span>
+      <span class="mile__name">Stainless</span>
+      <span class="mile__note">Harry Brearley adds 12% chromium. Steel stops rusting; kitchens and clinics change forever.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1934</span>
+      <span class="mile__name">Electrical Steel</span>
+      <span class="mile__note">Goss orients the grain. Transformers hum; the grid grows up.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row mile__row--major" data-reveal data-hover>
+      <span class="mile__year mono">1952</span>
+      <span class="mile__name">Basic Oxygen</span>
+      <span class="mile__note">Linz &amp; Donawitz blow pure O₂ — 300 tonnes of steel in forty minutes.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">1959</span>
+      <span class="mile__name">Continuous Casting</span>
+      <span class="mile__note">The endless strand replaces the ingot. Yield leaps; mills never sleep again.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row" data-reveal data-hover>
+      <span class="mile__year mono">2004</span>
+      <span class="mile__name">High-Entropy Alloys</span>
+      <span class="mile__note">Cantor &amp; Yeh mix five metals in equal parts. A new alloy universe opens.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+    <li class="mile__row mile__row--major" data-reveal data-hover>
+      <span class="mile__year mono">2021</span>
+      <span class="mile__name">Fossil-Free Steel</span>
+      <span class="mile__note">HYBRIT ships the first hydrogen-reduced steel to Volvo. The green ferrous era begins.</span>
+      <svg class="mile__icon" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"/></svg>
+    </li>
+  </ol>
+</section>
+
+<!-- ─────────── INTERLUDE ─────────── -->
+<section class="interlude" data-section-label="Interlude" data-grow data-cover="#timeline">
+  <figure class="interlude__media" data-parallax="0.12">
+    <img src="assets/img/green-plant.jpg" alt="Hydrogen steel plant at dawn">
+  </figure>
+  <div class="interlude__stack">
+    <span class="stackpill stackpill--paper">Stronger</span>
+    <span class="stackpill stackpill--ember">Cleaner</span>
+    <span class="stackpill stackpill--steel">Smarter</span>
+  </div>
+</section>
+
+<!-- ─────────── N.004 FRONTIER (pinned chapter) ─────────── -->
+<section class="section" id="frontier" data-section-label="Frontier">
+  <div class="section__meta mono"><span>N.004</span><span>THE FRONTIER</span><span>N.004</span></div>
+
+  <div class="chapter chapter--flip" data-pin data-steps="4">
+    <div class="chapter__stage">
+      <div class="chapter__grid">
+        <figure class="chapter__media">
+          <img class="chapter__img is-active" src="assets/img/green-plant.jpg" alt="Hydrogen direct reduction plant">
+          <img class="chapter__img" src="assets/img/hero-pour.jpg" alt="Molten oxide electrolysis">
+          <img class="chapter__img" src="assets/img/damascus.jpg" alt="High-entropy alloy microstructure">
+          <img class="chapter__img" src="assets/img/spec-powder.jpg" alt="Atomized metal powder for additive manufacturing">
+          <figcaption class="chapter__cap mono"><span class="chapter__capText">FIG. 01 — H₂ SHAFT, DAWN</span></figcaption>
+        </figure>
+        <div class="chapter__text">
+          <div class="chapter__num serif-num">02</div>
+          <div class="chapter__titles">
+            <div class="chapter__keeper"><span class="hl hl--steel">Frontier</span></div>
+            <h3 class="chapter__title"><span class="chapter__titleSwap">Hydrogen DRI</span></h3>
+          </div>
+          <p class="chapter__desc">Hydrogen strips oxygen from ore and exhales water instead of CO₂. HYBRIT, Stegra and a wave of new plants are aimed at steel's ~7% share of global emissions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── N.005 SPECIMENS ─────────── -->
+<section class="section" id="specimens" data-section-label="Specimens">
+  <div class="section__meta mono"><span>N.005</span><span>MATERIAL INDEX</span><span>N.005</span></div>
+  <h2 class="section__display" data-reveal data-lines>The archive,<br><em>weighed &amp; catalogued</em></h2>
+  <div class="spec">
+    <figure class="spec__card" data-reveal data-hover data-cursor="VIEW">
+      <div class="spec__frame"><img src="assets/img/spec-cube.jpg" alt="Machined carbon steel cube"></div>
+      <figcaption class="spec__cap">
+        <span class="mono spec__idx">SPEC. 001</span>
+        <span class="spec__name">Carbon steel, milled</span>
+        <span class="mono spec__prop">Fe + 0.4% C — 7.85 g/cm³</span>
+      </figcaption>
+    </figure>
+    <figure class="spec__card" data-reveal data-hover data-cursor="VIEW">
+      <div class="spec__frame"><img src="assets/img/spec-blade.jpg" alt="Single-crystal superalloy turbine blade"></div>
+      <figcaption class="spec__cap">
+        <span class="mono spec__idx">SPEC. 002</span>
+        <span class="spec__name">Turbine blade, single-crystal</span>
+        <span class="mono spec__prop">Ni-BASE — GROWN, NOT CAST</span>
+      </figcaption>
+    </figure>
+    <figure class="spec__card" data-reveal data-hover data-cursor="VIEW">
+      <div class="spec__frame"><img src="assets/img/spec-scrap.jpg" alt="Compacted scrap steel cube"></div>
+      <figcaption class="spec__cap">
+        <span class="mono spec__idx">SPEC. 003</span>
+        <span class="spec__name">Scrap, compacted</span>
+        <span class="mono spec__prop">100% RECYCLABLE — TOMORROW'S MELT</span>
+      </figcaption>
+    </figure>
+  </div>
+  <figure class="spec__wide" data-reveal data-hover>
+    <img src="assets/img/spec-grade.jpg" alt="Steel slab with hydrogen grade label">
+    <figcaption class="spec__wideCap mono"><span>SPEC. 004 — SLAB, LABELLED</span><span>ROLLED → GRADED → SHIPPED</span></figcaption>
+  </figure>
+</section>
+
+<!-- ─────────── N.006 APPLICATIONS ─────────── -->
+<section class="section" id="applications" data-section-label="Applications">
+  <div class="section__meta mono"><span>N.006</span><span>WHERE STEEL GOES</span><span>N.006</span></div>
+  <ul class="apps">
+    <li class="apps__row" data-reveal data-hover>
+      <span class="apps__idx mono">/01</span><span class="apps__word">Infrastructure</span><span class="apps__note mono">BRIDGES · RAIL · REBAR</span>
+    </li>
+    <li class="apps__row" data-reveal data-hover>
+      <span class="apps__idx mono">/02</span><span class="apps__word">Energy</span><span class="apps__note mono">TURBINES · PIPELINES · GRID</span>
+    </li>
+    <li class="apps__row" data-reveal data-hover>
+      <span class="apps__idx mono">/03</span><span class="apps__word">Mobility</span><span class="apps__note mono">AHSS BODIES · HULLS · HYPERLOOP</span>
+    </li>
+    <li class="apps__row" data-reveal data-hover>
+      <span class="apps__idx mono">/04</span><span class="apps__word">Aerospace</span><span class="apps__note mono">SUPERALLOYS · LANDING GEAR</span>
+    </li>
+    <li class="apps__row" data-reveal data-hover>
+      <span class="apps__idx mono">/05</span><span class="apps__word">Medical</span><span class="apps__note mono">316L IMPLANTS · NITINOL · SCALPELS</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ─────────── N.007 QUESTIONS ─────────── -->
+<section class="section" id="questions" data-section-label="Recap">
+  <div class="section__meta mono"><span>N.007</span><span>QUESTIONS</span><span>N.007</span></div>
+
+  <h2 class="faq__title" data-reveal>FAQ</h2>
+  <p class="faq__intro" data-reveal>Three thousand years of iron leave questions. We collected the ones we hear most — and answered them plainly.</p>
+
+  <div class="qwrap" data-grow>
+    <div class="qtabs" role="tablist" aria-label="Questions">
+      <button class="qtab is-active" id="qTab0" data-q="0" data-hover role="tab" aria-selected="true"><span class="qtab__dot"></span>N°01</button>
+      <button class="qtab" id="qTab1" data-q="1" data-hover role="tab" aria-selected="false"><span class="qtab__dot"></span>N°02</button>
+      <button class="qtab" id="qTab2" data-q="2" data-hover role="tab" aria-selected="false"><span class="qtab__dot"></span>N°03</button>
+    </div>
+  <div class="qcard">
+    <div class="qcard__viewport">
+      <div class="qcard__slide is-active">
+        <span class="qcard__label mono">QUESTION 01/03</span>
+        <h3 class="qcard__q">Why did steel need three thousand years?</h3>
+        <p class="qcard__a">Temperature. Bloomery fires never fully melted iron, so smiths hammered sponge metal for millennia. Only when furnaces crossed ~1,500&nbsp;°C — and Bessemer's air blast turned carbon itself into fuel — did liquid steel become an industrial material rather than a craft secret.</p>
+      </div>
+      <div class="qcard__slide">
+        <span class="qcard__label mono">QUESTION 02/03</span>
+        <h3 class="qcard__q">What actually makes steel “green”?</h3>
+        <p class="qcard__a">Replacing coke as the reducing agent. Hydrogen made with renewable power pulls oxygen out of ore and leaves only water vapour; electric-arc furnaces then melt that iron — or scrap — with clean electricity. Same steel, a fraction of the carbon.</p>
+      </div>
+      <div class="qcard__slide">
+        <span class="qcard__label mono">QUESTION 03/03</span>
+        <h3 class="qcard__q">Is anything left to invent in a 3,000-year-old material?</h3>
+        <p class="qcard__a">Almost everything. High-entropy alloys explore trillions of unmade recipes; amorphous metals freeze atoms mid-chaos; machine-learning models now design microstructures atom-first. Steel is old the way language is old — still being written.</p>
+      </div>
+    </div>
+    <div class="qcard__panel" id="qPanel" aria-live="polite">
+      <div class="qcard__panelHead">
+        <span class="mono" id="qPanelLabel">ANSWER 01/03</span>
+        <span class="qcard__panelFoot mono">FERRUM — FIELD NOTES</span>
+      </div>
+      <p class="qcard__panelText" id="qPanelText"></p>
+      <div class="qcard__panelBar">
+        <button class="qcard__close mono" id="qClose" data-hover>CLOSE</button>
+        <div class="qcard__arrows">
+          <button class="qcard__arrow qcard__arrow--onpanel" id="qPrevIn" data-hover aria-label="Previous answer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 4 L7 12 L15 20"/></svg>
+          </button>
+          <button class="qcard__arrow qcard__arrow--onpanel" id="qNextIn" data-hover aria-label="Next answer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4 L17 12 L9 20"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="qcard__foot">
+      <button class="qcard__read mono" id="qRead" data-hover>READ ANSWER</button>
+      <div class="qcard__arrows">
+        <button class="qcard__arrow" id="qPrev" data-hover data-magnet aria-label="Previous question">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 4 L7 12 L15 20"/></svg>
+        </button>
+        <button class="qcard__arrow" id="qNext" data-hover data-magnet aria-label="Next question">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4 L17 12 L9 20"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ─────────── FOOTER ─────────── -->
+<footer class="footer" id="contact" data-section-label="Contact" data-cover="#questions">
+  <div class="footer__card" data-grow>
+    <div class="section__meta section__meta--dark mono"><span>N.008</span><span>CONTACT</span><span>N.008</span></div>
+    <h2 class="footer__display" data-reveal data-lines>Change starts<br><em>at the melt.</em></h2>
+    <div class="footer__pills">
+      <a class="fpill fpill--ember" href="mailto:hello@ferrum.institute" data-hover>Mail</a>
+      <a class="fpill fpill--lilac" href="tel:+82316097589" data-hover>Phone</a>
+    </div>
+    <div class="footer__cols">
+      <div class="footer__col">
+        <span class="footer__colTitle">Foundry</span>
+        <p>The Ferrum Institute<br>45 Cotonificio Works<br>Songdo · Incheon · KR</p>
+      </div>
+      <div class="footer__col">
+        <span class="footer__colTitle">Reading</span>
+        <p>worldsteel.org<br>HYBRIT Development<br>Boston Metal · MOE</p>
+      </div>
+      <div class="footer__col">
+        <span class="footer__colTitle">Colophon</span>
+        <p>Type — Archivo &amp; Plex Mono<br>Images — generated study plates<br>Built as a material essay</p>
+      </div>
+    </div>
+    <svg class="footer__logo" viewBox="0 0 2366 365" fill="#FF3600" aria-hidden="true"><use href="#ferrum-title"/></svg>
+    <div class="footer__bar mono">
+      <span>FERRUM © 2026 — A STUDY IN MATERIAL INNOVATION</span>
+      <span>1200 BC → PRESENT</span>
+      <a href="#top" data-nav="#top" data-hover data-magnet>BACK TO TOP ↑</a>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<script src="js/main.js"></script>
+</body>
+</html>
