@@ -448,9 +448,9 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
 }
 .thesis__lead--second { margin-top: clamp(56px, 10vh, 130px); }
 .thesis__lead--second::before { background: var(--steel-pill); }
-.fill-text .w { color: var(--ink-ghost); transition: color 0.35s linear; }
-.fill-text .w.is-lit { color: var(--ink); }
-.fill-text .w.is-hot { color: var(--ember); }
+/* word color is painted per-frame from scroll position (js/main.js paintFill) —
+   no transition, so completion aligns exactly with the pin release */
+.fill-text .w { color: var(--ink-ghost); }
 
 .thesis__facts {
   margin-top: clamp(70px, 12vh, 150px);
@@ -503,12 +503,16 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
   align-items: center;
 }
 .chapter--flip .chapter__grid { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
-.chapter--flip .chapter__media { order: 2; }
+/* media can be narrower than its column (74vh cap) — keep it on the outer gutter */
+.chapter--flip .chapter__media { order: 2; justify-self: end; }
 .chapter--flip .chapter__text { order: 1; }
 
 .chapter__media {
   position: relative;
   aspect-ratio: 4 / 5;
+  /* explicit width: children are absolutely positioned, so without it the
+     figure collapses when unstretched (justify-self on the flip variant) */
+  width: min(100%, calc(74vh * 4 / 5));
   max-height: 74vh;
   border-radius: var(--radius-card);
   overflow: hidden;
@@ -589,9 +593,7 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
    ghost → accent at the reading frontier → settles to ink */
 .chapter { --desc-accent: var(--ember); }
 .chapter--flip { --desc-accent: #5f83b5; }
-.chapter__desc .cw { color: var(--ink-ghost); transition: color 0.3s linear; }
-.chapter__desc .cw.is-hot { color: var(--desc-accent); }
-.chapter__desc .cw.is-lit { color: var(--ink); }
+.chapter__desc .cw { color: var(--ink-ghost); }
 
 /* ═══════════════ TIMELINE ═══════════════ */
 .mile { list-style: none; border-top: 1px solid var(--ink); }

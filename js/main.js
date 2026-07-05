@@ -59,6 +59,22 @@
   const easeOutCubic = (p) => 1 - Math.pow(1 - p, 3);
   const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
+  /* scroll-driven word tint — color is a pure function of the frontier
+     position, so completion lands on an exact scroll offset (no CSS
+     transition lag, no rounding). Writes are skipped when unchanged. */
+  const setWordColor = (w, css) => {
+    if (w._col !== css) { w._col = css; w.style.color = css; }
+  };
+  const FILL_SOFT = 2; // frontier softness, in words
+  function paintFill(fill, f) {
+    fill.words.forEach((w, i) => {
+      const t = clamp01((f - i) / FILL_SOFT);
+      const target = fill.targets[i];
+      setWordColor(w, t >= 1 ? target : t <= 0 ? "var(--ink-ghost)"
+        : `color-mix(in oklab, ${target} ${(t * 100).toFixed(1)}%, var(--ink-ghost))`);
+    });
+  }
+
   /* wrap <br>-separated lines of [data-lines] headings in overflow masks */
   function splitLines(el) {
     if (el.dataset.linesReady) return;
@@ -117,6 +133,7 @@
         media: el.querySelector(".chapter__media"),
         steps: +el.dataset.steps || 1,
         idx: -1,
+        tintStart: 0,
         data: CHAPTERS[i] || null,
       });
     });
@@ -168,16 +185,17 @@
           .join(" ");
         el.dataset.split = "1";
       }
+      const words = [...el.querySelectorAll(".w")];
       fills.push({
         el,
-        words: [...el.querySelectorAll(".w")],
+        words,
+        targets: words.map((w) => w.classList.contains("hot-mark") ? "var(--ember)" : "var(--ink)"),
         top: offsetOf(el),
         height: el.offsetHeight,
-        lit: -1,
       });
     });
     // thesis paragraphs run as one chain: the second starts only after the first completes
-    fillChain.push(...fills.filter((f) => f.el.closest(".thesis")).sort((a, b) => a.top - b.top));
+    fillChain.push(...fills.filter((f) => f.el.closest("[data-pin-thesis]")).sort((a, b) => a.top - b.top));
 
     parallaxes.length = 0;
     document.querySelectorAll("[data-parallax]").forEach((el) => {
@@ -219,6 +237,7 @@
   function applyStep(pin, idx) {
     if (!pin.data || idx === pin.idx) return;
     const first = pin.idx === -1;
+    const backward = !first && idx < pin.idx;
     pin.idx = idx;
     const step = pin.data.steps[idx];
     const scope = pin.el;
@@ -234,7 +253,6 @@
         .map((w) => `<span class="cw">${w}</span>`)
         .join(" ");
       pin.descWords = [...desc.querySelectorAll(".cw")];
-      pin.lastLit = -1;
     };
 
     imgs.forEach((img, i) => img.classList.toggle("is-active", i === idx));
@@ -243,8 +261,12 @@
       swap.textContent = step.t;
       setDesc();
       cap.textContent = step.cap;
+      pin.tintStart = 0;
       return;
     }
+    // freeze the tint sweep while the text fades: old words keep their colors
+    // on the way out, new words stay ghost until the fade-in settles
+    pin.tintStart = null;
     swap.classList.remove("is-inn");
     swap.classList.add("is-out");
     desc.classList.add("is-out");
@@ -256,6 +278,16 @@
       swap.classList.add("is-inn");
       desc.classList.remove("is-out");
       setTimeout(() => swap.classList.remove("is-inn"), 500);
+      if (backward) {
+        // rewinding — the step re-enters at its end, already tinted to position
+        pin.tintStart = 0;
+      } else {
+        setTimeout(() => {
+          if (pin.idx !== idx) return;
+          // fade-in is ending — the sweep starts from the current scroll point
+          pin.tintStart = pin.range > 0 ? clamp01((pin.y / pin.range) * pin.steps - idx) : 0;
+        }, 300);
+      }
     }, 380);
   }
 
@@ -345,20 +377,26 @@
         const exact = p * pin.steps;
         const idx = Math.min(pin.steps - 1, Math.floor(exact));
         applyStep(pin, idx);
-        // tint sweep: words go ghost → accent (frontier band) → ink within each step;
-        // the frontier travels band-width past the end so every word settles to ink
-        if (pin.descWords && pin.descWords.length) {
-          const within = clamp01((exact - idx) / 0.8);
+        // tint sweep: words go ghost → accent (frontier band) → ink within each step.
+        // the sweep runs from tintStart (where the swap fade settled, so fresh
+        // words never appear pre-tinted; null = frozen mid-fade) to the end:
+        // earlier steps finish at 80% so the settled text lingers before the swap;
+        // the last step's final word settles to ink exactly when the pin releases
+        // (within hits 1 on the same frame y reaches range)
+        if (pin.descWords && pin.descWords.length && pin.tintStart !== null) {
+          const lastStep = idx === pin.steps - 1;
+          const end = lastStep ? 1 : 0.8;
+          const start = Math.min(pin.tintStart, end - 0.15);
+          const within = clamp01((exact - idx - start) / (end - start));
           const n = pin.descWords.length;
           const band = Math.max(2, Math.round(n * 0.24));
-          const lit = Math.round(within * (n + band));
-          if (lit !== pin.lastLit) {
-            pin.lastLit = lit;
-            pin.descWords.forEach((w, i) => {
-              w.classList.toggle("is-lit", i < lit - band);
-              w.classList.toggle("is-hot", i >= lit - band && i < lit);
-            });
-          }
+          const f = within * (n + band - 1);
+          pin.descWords.forEach((w, i) => {
+            const e = clamp01(f - i);                    // ghost → accent
+            const s = clamp01((f - i - 1) / (band - 1)); // accent → ink
+            setWordColor(w, s >= 1 ? "var(--ink)" : e <= 0 ? "var(--ink-ghost)"
+              : `color-mix(in oklab, var(--ink) ${(s * 100).toFixed(1)}%, color-mix(in oklab, var(--desc-accent) ${(e * 100).toFixed(1)}%, var(--ink-ghost)))`);
+          });
         }
       }
       // media grows slightly as the chapter approaches
@@ -408,12 +446,13 @@
       if (!h.done && h.top < current + vh * 0.75) { h.done = true; h.el.classList.add("is-lit"); }
     }
 
-    // word fills — chained paragraphs share one progress, filling in sequence.
-    // driven by the thesis hold: words finish at 85% of the pin, then it releases
+    // word fills — chained paragraphs share one frontier, filling in sequence.
+    // driven by the thesis hold: the last word settles exactly when the pin
+    // releases (p hits 1 on the same frame thesisPin.y reaches range)
     if (fillChain.length) {
       let p;
       if (thesisPin && thesisPin.range > 0) {
-        p = clamp01(thesisPin.y / (thesisPin.range * 0.85));
+        p = clamp01(thesisPin.y / thesisPin.range);
       } else {
         const first = fillChain[0];
         const last = fillChain[fillChain.length - 1];
@@ -422,17 +461,10 @@
         p = clamp01((current - start) / (end - start));
       }
       const total = fillChain.reduce((s, f) => s + f.words.length, 0);
-      let remaining = Math.round(p * total);
-      for (const f of fillChain) {
-        const lit = Math.max(0, Math.min(f.words.length, remaining));
-        remaining -= f.words.length;
-        if (lit !== f.lit) {
-          f.lit = lit;
-          f.words.forEach((w, i) => {
-            w.classList.toggle("is-lit", i < lit);
-            if (w.classList.contains("hot-mark")) w.classList.toggle("is-hot", i < lit);
-          });
-        }
+      let f = p * (total - 1 + FILL_SOFT);
+      for (const fill of fillChain) {
+        paintFill(fill, f);
+        f -= fill.words.length;
       }
     }
     // any standalone fills keep their own local progress
@@ -441,14 +473,7 @@
       const start = f.top - vh * 0.85;
       const end = f.top - vh * 0.25 + f.height;
       const p = clamp01((current - start) / (end - start));
-      const lit = Math.round(p * f.words.length);
-      if (lit !== f.lit) {
-        f.lit = lit;
-        f.words.forEach((w, i) => {
-          w.classList.toggle("is-lit", i < lit);
-          if (w.classList.contains("hot-mark")) w.classList.toggle("is-hot", i < lit);
-        });
-      }
+      paintFill(f, p * (f.words.length - 1 + FILL_SOFT));
     }
 
     // parallax
