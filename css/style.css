@@ -880,16 +880,19 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
   inset: 8px;
   z-index: 6;
   display: flex; flex-direction: column;
-  padding: clamp(20px, 3vw, 44px);
+  /* card padding minus the 8px inset, so panel content (CLOSE, arrows)
+     lines up exactly with the card footer (READ ANSWER) underneath */
+  padding: calc(clamp(24px, 4vw, 56px) - 8px);
   border-radius: calc(var(--radius-card) * 0.8);
-  background: linear-gradient(0deg, var(--ember-pill), rgba(255, 201, 172, 0.78));
+  background: var(--ember-pill);
+  --panel-deep: #f2ab7d;
   transform: translateY(calc(100% + 40px));
   transition: transform 0.9s var(--ease-swift), background 0.5s;
   will-change: transform;
 }
 .qcard.show-answer .qcard__panel { transform: translateY(0); }
-.qcard__panel--steel { background: linear-gradient(0deg, var(--steel-pill), rgba(199, 211, 224, 0.78)); }
-.qcard__panel--lilac { background: linear-gradient(0deg, var(--lilac-pill), rgba(217, 198, 242, 0.78)); }
+.qcard__panel--steel { background: var(--steel-pill); --panel-deep: #a9bccf; }
+.qcard__panel--lilac { background: var(--lilac-pill); --panel-deep: #c1a5e9; }
 .qcard__panelHead {
   display: flex; justify-content: space-between; align-items: center;
   padding-bottom: 14px;
@@ -924,14 +927,16 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
   display: flex; justify-content: space-between; align-items: center;
 }
 .qcard__close {
-  padding: 16px 26px;
-  border-radius: 11px;
+  /* same metrics as .qcard__read so it sits exactly over READ ANSWER */
+  padding: 18px 26px;
+  border-radius: 12px;
   background: rgba(21, 19, 18, 0.09);
   transition: background 0.3s, color 0.3s;
 }
 .qcard__close:hover { background: var(--ink); color: var(--paper-high); }
-.qcard__arrow--onpanel { background: rgba(21, 19, 18, 0.09); }
-.qcard__arrow--onpanel:hover { background: var(--ink); color: var(--paper-high); }
+/* double class: must outweigh the later .qcard__arrow gradient background */
+.qcard__arrow.qcard__arrow--onpanel { background: var(--panel-deep); transition: background 0.5s, color 0.5s, transform 0.3s var(--ease-out); }
+.qcard__arrow.qcard__arrow--onpanel:hover { background: var(--ink); color: var(--paper-high); }
 .qcard__foot {
   display: flex; justify-content: space-between; align-items: center;
   margin-top: clamp(24px, 4vh, 48px);
@@ -1001,7 +1006,7 @@ body.is-ready .hero__foot { opacity: 1; transform: translateY(0); }
   font-weight: 500;
   letter-spacing: -0.04em;
   line-height: 1.12;
-  padding: 0.03em 0 0.15em;
+  padding: 0.097em 0 0.083em; /* optical: ink-centered, nudged ~1px up */
   border-radius: 999px;
   color: var(--ink);
   transition: transform 0.45s var(--ease-out), background 0.35s, color 0.35s;
