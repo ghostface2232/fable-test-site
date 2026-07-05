@@ -48,7 +48,6 @@
   const fills = [];     // {el, words, top, height, lit}
   const fillChain = []; // thesis paragraphs — filled as one continuous sequence
   const parallaxes = [];// {el, top, height, factor}
-  const sections = [];  // {el, top, label, navSel}
   const covers = [];    // {incomingTop, prev} — prev recedes while next slides over
   const grows = [];     // {el, top} — cards scaling 0.88 → 1 on entry
   const iparallax = []; // {img, top, h} — inner image drift
@@ -203,12 +202,6 @@
       parallaxes.push({ el, top: offsetOf(host), height: host.offsetHeight, factor: +el.dataset.parallax || 0.15 });
     });
 
-    sections.length = 0;
-    document.querySelectorAll("[data-section-label]").forEach((el) => {
-      sections.push({ el, top: offsetOf(el), label: el.dataset.sectionLabel, id: el.id ? "#" + el.id : null });
-    });
-    sections.sort((a, b) => a.top - b.top);
-
     // hero pin — the card holds still while the next section slides over it
     const heroSec = document.querySelector(".hero");
     heroPin = heroSec
@@ -289,32 +282,6 @@
         }, 300);
       }
     }, 380);
-  }
-
-  /* ═══════════ NAV / CONTEXT ═══════════ */
-  const contextPill = document.getElementById("contextPill");
-  const contextLabel = document.getElementById("contextLabel");
-  const navItems = [...document.querySelectorAll(".pill-group__item")];
-  let currentLabel = "Intro";
-
-  function setContext(label, id) {
-    if (label === currentLabel) return;
-    currentLabel = label;
-    contextPill.classList.add("is-swapping");
-    setTimeout(() => {
-      contextLabel.textContent = label;
-      contextPill.classList.remove("is-swapping");
-    }, 220);
-    navItems.forEach((a) => {
-      const href = a.getAttribute("href");
-      a.classList.toggle(
-        "is-active",
-        href !== "#contact" && id !== null &&
-        ((href === "#foundations" && (id === "#foundations")) ||
-         (href === "#timeline" && id === "#timeline") ||
-         (href === "#frontier" && (id === "#frontier" || id === "#applications")))
-      );
-    });
   }
 
   /* ═══════════ MAIN LOOP ═══════════ */
@@ -484,11 +451,6 @@
         p.el.style.transform = `translate3d(0, ${shift.toFixed(2)}px, 0)`;
       }
     }
-
-    // context label
-    let active = sections[0];
-    for (const s of sections) if (current + vh * 0.4 >= s.top) active = s;
-    if (active) setContext(active.label, active.id);
 
     // marquee — speed and skew react to scroll velocity
     if (marquee) {
@@ -691,20 +653,6 @@
     qcard.classList.contains("show-answer") ? closeAnswer() : openAnswer();
   });
   syncPanel();
-
-  /* ═══════════ NAV BLOB (hover follower in the pill group) ═══════════ */
-  const pillGroup = document.getElementById("pillGroup");
-  const pillBlob = document.getElementById("pillBlob");
-  if (pillGroup && pillBlob && matchMedia("(hover: hover)").matches) {
-    pillGroup.querySelectorAll(".pill-group__item").forEach((item) => {
-      item.addEventListener("mouseenter", () => {
-        pillBlob.style.transform = `translateX(${item.offsetLeft}px)`;
-        pillBlob.style.width = item.offsetWidth + "px";
-        pillGroup.classList.add("blob-on");
-      });
-    });
-    pillGroup.addEventListener("mouseleave", () => pillGroup.classList.remove("blob-on"));
-  }
 
   /* ═══════════ IMAGE FALLBACK ═══════════ */
   document.querySelectorAll("img").forEach((img) => {
